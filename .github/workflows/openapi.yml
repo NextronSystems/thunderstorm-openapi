@@ -1,0 +1,17 @@
+name: OpenAPI
+
+on: [push]
+
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+      - name: Use Node.js
+        uses: actions/setup-node@v4
+      - name: Setup spectral
+        run: npm install -g @stoplight/spectral-cli
+      - name: Install IBM Cloud ruleset
+        run: npm install @ibm-cloud/openapi-ruleset
+      - name: Lint OpenAPI spec
+        run: spectral lint docs/openapi.yaml
