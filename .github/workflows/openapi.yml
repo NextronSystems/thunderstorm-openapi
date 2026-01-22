@@ -15,3 +15,20 @@ jobs:
         run: npm install @ibm-cloud/openapi-ruleset
       - name: Lint OpenAPI spec
         run: spectral lint docs/openapi.yaml
+
+  build-html:
+    runs-on: ubuntu-latest
+    needs: lint
+    steps:
+      - uses: actions/checkout@v5
+      - name: Use Node.js
+        uses: actions/setup-node@v4
+      - name: Setup OpenAPI generator
+        run: npm install -g @openapitools/openapi-generator-cli
+      - name: Build HTML documentation
+        run: openapi-generator-cli generate --generator-name html2 --input-spec docs/openapi.yaml --output dist
+      - name: Upload HTML documentation as artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: openapi-html
+          path: dist/index.html
