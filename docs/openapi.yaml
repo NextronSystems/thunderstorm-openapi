@@ -55,9 +55,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/SampleId"
-              example:
-                id: 12345
+                $ref: "#/components/schemas/SampleIdObj"
         "400":
           $ref: "#/components/responses/BadRequest"
         "500":
@@ -75,7 +73,7 @@ paths:
           in: query
           required: true
           schema:
-            $ref: "#/components/schemas/SampleId/properties/id"
+            $ref: "#/components/schemas/SampleId"
       responses:
         "200":
           description: >-
@@ -250,18 +248,22 @@ components:
       description: THOR Finding
       type: object
       additionalProperties: true # Any type
-    SampleId:
-      description: Sample ID returned for an asynchronous scan request
+    SampleIdObj:
+      description: Object containing the Sample ID returned for an asynchronous scan request
       type: object
       properties:
         id:
-          description: Sample ID
-          type: integer
-          format: int64
+          $ref: "#/components/schemas/SampleId"
       required:
         - id
       example:
         id: 12345
+    SampleId:
+      description: Sample ID returned for an asynchronous scan request
+      type: integer
+      format: int64
+      example:
+        12345
     AsyncResult:
       description: Result object for asynchronous scan operations
       type: object
