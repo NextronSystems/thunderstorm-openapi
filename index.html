@@ -932,17 +932,15 @@ ul.nav-tabs {
   },
   "description" : "Error with message"
 };
-    defs["SampleId"] = {
+    defs["SampleIdObj"] = {
   "required" : [ "id" ],
   "type" : "object",
   "properties" : {
     "id" : {
-      "type" : "integer",
-      "description" : "Sample ID",
-      "format" : "int64"
+      "$ref" : "#/components/schemas/SampleId"
     }
   },
-  "description" : "Sample ID returned for an asynchronous scan request",
+  "description" : "Object containing the Sample ID returned for an asynchronous scan request",
   "example" : {
     "id" : 12345
   }
@@ -1065,6 +1063,12 @@ ul.nav-tabs {
   "description" : "Version information for various components of the Thunderstorm service."
 };
 
+        defs["SampleId"] = {
+  "type" : "integer",
+  "description" : "Sample ID returned for an asynchronous scan request",
+  "format" : "int64",
+  "example" : 12345
+};
 
     var errs = {};
   </script>
@@ -1142,7 +1146,7 @@ ul.nav-tabs {
                         <p class="marked">Receive static information about the running THOR instance.</p>
                         <p></p>
                         <br />
-                        <pre class="prettyprint language-html prettyprinted" data-type="get"><code><span class="pln">/api/info</span></code></pre>
+                        <pre class="prettyprint language-html prettyprinted" data-type="get"><code><span class="pln">/info</span></code></pre>
                         <p>
                           <h3>Usage and SDK Samples</h3>
                         </p>
@@ -1166,7 +1170,7 @@ ul.nav-tabs {
                           <div class="tab-pane active" id="examples-Info-info-0-curl">
                             <pre class="prettyprint"><code class="language-bsh">curl -X GET \
  -H "Accept: application/json" \
- "http://localhost:8080/api/v1/api/info"
+ "http://localhost:8080/api/v1/info"
 </code></pre>
                           </div>
                           <div class="tab-pane" id="examples-Info-info-0-java">
@@ -1546,7 +1550,7 @@ pub fn main() {
                         <p class="marked">Retrieve a history of how many asynchronous requests were queued</p>
                         <p></p>
                         <br />
-                        <pre class="prettyprint language-html prettyprinted" data-type="get"><code><span class="pln">/api/queueHistory</span></code></pre>
+                        <pre class="prettyprint language-html prettyprinted" data-type="get"><code><span class="pln">/queueHistory</span></code></pre>
                         <p>
                           <h3>Usage and SDK Samples</h3>
                         </p>
@@ -1570,7 +1574,7 @@ pub fn main() {
                           <div class="tab-pane active" id="examples-Info-queueHistory-0-curl">
                             <pre class="prettyprint"><code class="language-bsh">curl -X GET \
  -H "Accept: application/json" \
- "http://localhost:8080/api/v1/api/queueHistory?aggregate=789&limit=789"
+ "http://localhost:8080/api/v1/queueHistory?aggregate=789&limit=789"
 </code></pre>
                           </div>
                           <div class="tab-pane" id="examples-Info-queueHistory-0-java">
@@ -2027,7 +2031,7 @@ Give a history for the last this many minutes (default infinite).
                         <p class="marked">Retrieve a history of how many samples were scanned.</p>
                         <p></p>
                         <br />
-                        <pre class="prettyprint language-html prettyprinted" data-type="get"><code><span class="pln">/api/sampleHistory</span></code></pre>
+                        <pre class="prettyprint language-html prettyprinted" data-type="get"><code><span class="pln">/sampleHistory</span></code></pre>
                         <p>
                           <h3>Usage and SDK Samples</h3>
                         </p>
@@ -2051,7 +2055,7 @@ Give a history for the last this many minutes (default infinite).
                           <div class="tab-pane active" id="examples-Info-sampleHistory-0-curl">
                             <pre class="prettyprint"><code class="language-bsh">curl -X GET \
  -H "Accept: application/json" \
- "http://localhost:8080/api/v1/api/sampleHistory?aggregate=789&limit=789"
+ "http://localhost:8080/api/v1/sampleHistory?aggregate=789&limit=789"
 </code></pre>
                           </div>
                           <div class="tab-pane" id="examples-Info-sampleHistory-0-java">
@@ -2508,7 +2512,7 @@ Give a history for the last this many minutes (default infinite).
                         <p class="marked">Receive live information about the running THOR instance.</p>
                         <p></p>
                         <br />
-                        <pre class="prettyprint language-html prettyprinted" data-type="get"><code><span class="pln">/api/status</span></code></pre>
+                        <pre class="prettyprint language-html prettyprinted" data-type="get"><code><span class="pln">/status</span></code></pre>
                         <p>
                           <h3>Usage and SDK Samples</h3>
                         </p>
@@ -2532,7 +2536,7 @@ Give a history for the last this many minutes (default infinite).
                           <div class="tab-pane active" id="examples-Info-status-0-curl">
                             <pre class="prettyprint"><code class="language-bsh">curl -X GET \
  -H "Accept: application/json" \
- "http://localhost:8080/api/v1/api/status"
+ "http://localhost:8080/api/v1/status"
 </code></pre>
                           </div>
                           <div class="tab-pane" id="examples-Info-status-0-java">
@@ -2839,7 +2843,7 @@ pub fn main() {
                         <p class="marked">Retrieve the results of an asynchronous file check.</p>
                         <p></p>
                         <br />
-                        <pre class="prettyprint language-html prettyprinted" data-type="get"><code><span class="pln">/api/getAsyncResults</span></code></pre>
+                        <pre class="prettyprint language-html prettyprinted" data-type="get"><code><span class="pln">/getAsyncResults</span></code></pre>
                         <p>
                           <h3>Usage and SDK Samples</h3>
                         </p>
@@ -2863,7 +2867,7 @@ pub fn main() {
                           <div class="tab-pane active" id="examples-Results-getAsyncResults-0-curl">
                             <pre class="prettyprint"><code class="language-bsh">curl -X GET \
  -H "Accept: application/json" \
- "http://localhost:8080/api/v1/api/getAsyncResults?id=789"
+ "http://localhost:8080/api/v1/getAsyncResults?id=789"
 </code></pre>
                           </div>
                           <div class="tab-pane" id="examples-Results-getAsyncResults-0-java">
@@ -2880,7 +2884,7 @@ public class ResultsApiExample {
 
         // Create an instance of the API class
         ResultsApi apiInstance = new ResultsApi();
-        Id id = 789; // Id | Sample ID
+        Long id = 789; // Long | Sample ID
 
         try {
             AsyncResult result = apiInstance.getAsyncResults(id);
@@ -2899,7 +2903,7 @@ public class ResultsApiExample {
 
 final api_instance = DefaultApi();
 
-final Id id = new Id(); // Id | Sample ID
+final Long id = new Long(); // Long | Sample ID
 
 try {
     final result = await api_instance.getAsyncResults(id);
@@ -2917,7 +2921,7 @@ try {
 public class ResultsApiExample {
     public static void main(String[] args) {
         ResultsApi apiInstance = new ResultsApi();
-        Id id = 789; // Id | Sample ID
+        Long id = 789; // Long | Sample ID
 
         try {
             AsyncResult result = apiInstance.getAsyncResults(id);
@@ -2938,7 +2942,7 @@ public class ResultsApiExample {
 
 // Create an instance of the API class
 ResultsApi *apiInstance = [[ResultsApi alloc] init];
-Id *id = 789; // Sample ID (default to null)
+Long *id = 789; // Sample ID (default to null)
 
 // Retrieve the results of an asynchronous file check
 [apiInstance getAsyncResultsWith:id
@@ -2958,7 +2962,7 @@ Id *id = 789; // Sample ID (default to null)
 
 // Create an instance of the API class
 var api = new ThorThunderstormApi.ResultsApi()
-var id = 789; // {Id} Sample ID
+var id = 789; // {Long} Sample ID
 
 var callback = function(error, data, response) {
   if (error) {
@@ -2990,7 +2994,7 @@ namespace Example
 
             // Create an instance of the API class
             var apiInstance = new ResultsApi();
-            var id = 789;  // Id | Sample ID (default to null)
+            var id = 789;  // Long | Sample ID (default to null)
 
             try {
                 // Retrieve the results of an asynchronous file check
@@ -3011,7 +3015,7 @@ require_once(__DIR__ . '/vendor/autoload.php');
 
 // Create an instance of the API class
 $api_instance = new OpenAPITools\Client\Api\ResultsApi();
-$id = 789; // Id | Sample ID
+$id = 789; // Long | Sample ID
 
 try {
     $result = $api_instance->getAsyncResults($id);
@@ -3029,7 +3033,7 @@ use WWW::OPenAPIClient::ResultsApi;
 
 # Create an instance of the API class
 my $api_instance = WWW::OPenAPIClient::ResultsApi->new();
-my $id = 789; # Id | Sample ID
+my $id = 789; # Long | Sample ID
 
 eval {
     my $result = $api_instance->getAsyncResults(id => $id);
@@ -3049,7 +3053,7 @@ from pprint import pprint
 
 # Create an instance of the API class
 api_instance = openapi_client.ResultsApi()
-id = 789 # Id | Sample ID (default to null)
+id = 789 # Long | Sample ID (default to null)
 
 try:
     # Retrieve the results of an asynchronous file check
@@ -3063,7 +3067,7 @@ except ApiException as e:
                               <pre class="prettyprint"><code class="language-rust">extern crate ResultsApi;
 
 pub fn main() {
-    let id = 789; // Id
+    let id = 789; // Long
 
     let mut context = ResultsApi::Context::default();
     let result = client.getAsyncResults(id, &context).wait();
@@ -3099,7 +3103,7 @@ pub fn main() {
         <div class="json-schema-view">
             <div class="primitive">
                 <span class="type">
-                    Id
+                    Long
                 </span>
                     <span class="format">
                         (int64)
@@ -3366,7 +3370,7 @@ Sample ID
                         <p class="marked">Check a file with THOR</p>
                         <p></p>
                         <br />
-                        <pre class="prettyprint language-html prettyprinted" data-type="post"><code><span class="pln">/api/check</span></code></pre>
+                        <pre class="prettyprint language-html prettyprinted" data-type="post"><code><span class="pln">/check</span></code></pre>
                         <p>
                           <h3>Usage and SDK Samples</h3>
                         </p>
@@ -3391,7 +3395,7 @@ Sample ID
                             <pre class="prettyprint"><code class="language-bsh">curl -X POST \
  -H "Accept: application/json" \
  -H "Content-Type: multipart/form-data" \
- "http://localhost:8080/api/v1/api/check?source=source_example"
+ "http://localhost:8080/api/v1/check?source=source_example"
 </code></pre>
                           </div>
                           <div class="tab-pane" id="examples-Scan-check-0-java">
@@ -3931,7 +3935,7 @@ Specify source for the THOR log
                         <p class="marked">Check a file with THOR asynchronously</p>
                         <p></p>
                         <br />
-                        <pre class="prettyprint language-html prettyprinted" data-type="post"><code><span class="pln">/api/checkAsync</span></code></pre>
+                        <pre class="prettyprint language-html prettyprinted" data-type="post"><code><span class="pln">/checkAsync</span></code></pre>
                         <p>
                           <h3>Usage and SDK Samples</h3>
                         </p>
@@ -3956,7 +3960,7 @@ Specify source for the THOR log
                             <pre class="prettyprint"><code class="language-bsh">curl -X POST \
  -H "Accept: application/json" \
  -H "Content-Type: multipart/form-data" \
- "http://localhost:8080/api/v1/api/checkAsync?source=source_example"
+ "http://localhost:8080/api/v1/checkAsync?source=source_example"
 </code></pre>
                           </div>
                           <div class="tab-pane" id="examples-Scan-checkAsync-0-java">
@@ -3977,7 +3981,7 @@ public class ScanApiExample {
         String source = source_example; // String | Specify source for the THOR log
 
         try {
-            SampleId result = apiInstance.checkAsync(file, source);
+            SampleIdObj result = apiInstance.checkAsync(file, source);
             System.out.println(result);
         } catch (ApiException e) {
             System.err.println("Exception when calling ScanApi#checkAsync");
@@ -4016,7 +4020,7 @@ public class ScanApiExample {
         String source = source_example; // String | Specify source for the THOR log
 
         try {
-            SampleId result = apiInstance.checkAsync(file, source);
+            SampleIdObj result = apiInstance.checkAsync(file, source);
             System.out.println(result);
         } catch (ApiException e) {
             System.err.println("Exception when calling ScanApi#checkAsync");
@@ -4040,7 +4044,7 @@ String *source = source_example; // Specify source for the THOR log (optional) (
 // Check a file with THOR asynchronously
 [apiInstance checkAsyncWith:file
     source:source
-              completionHandler: ^(SampleId output, NSError* error) {
+              completionHandler: ^(SampleIdObj output, NSError* error) {
     if (output) {
         NSLog(@"%@", output);
     }
@@ -4096,7 +4100,7 @@ namespace Example
 
             try {
                 // Check a file with THOR asynchronously
-                SampleId result = apiInstance.checkAsync(file, source);
+                SampleIdObj result = apiInstance.checkAsync(file, source);
                 Debug.WriteLine(result);
             } catch (Exception e) {
                 Debug.Print("Exception when calling ScanApi.checkAsync: " + e.Message );
@@ -4288,10 +4292,7 @@ Specify source for the THOR log
   "content" : {
     "application/json" : {
       "schema" : {
-        "$ref" : "#/components/schemas/SampleId"
-      },
-      "example" : {
-        "id" : 12345
+        "$ref" : "#/components/schemas/SampleIdObj"
       }
     }
   }
