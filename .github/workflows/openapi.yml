@@ -1,0 +1,82 @@
+name: OpenAPI
+
+on: [push]
+
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+      - name: Use Node.js
+        uses: actions/setup-node@v4
+      - name: Setup spectral
+        run: npm install -g @stoplight/spectral-cli
+      - name: Install IBM Cloud ruleset
+        run: npm install @ibm-cloud/openapi-ruleset
+      - name: Lint OpenAPI spec
+        run: spectral lint docs/openapi.yaml
+
+  build-html:
+    runs-on: ubuntu-latest
+    needs: lint
+    steps:
+      - uses: actions/checkout@v5
+      - name: Use Node.js
+        uses: actions/setup-node@v4
+      - name: Setup OpenAPI generator
+        run: npm install -g @openapitools/openapi-generator-cli
+      - name: Build HTML documentation
+        run: openapi-generator-cli generate --generator-name html2 --input-spec docs/openapi.yaml --output dist
+      - name: Upload HTML documentation as artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: openapi-html
+          path: dist/index.html
+
+  release:
+    runs-on: ubuntu-latest
+    needs: build-html
+    if: startsWith(github.ref, 'refs/tags/v')
+    permissions:
+      contents: write
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v5
+      - name: Validate tag format
+        run: |
+          TAG="${GITHUB_REF#refs/tags/}"
+          if [[ ! "$TAG" =~ ^v[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
+            echo "Tag $TAG does not match the required format v[0-9]+.[0-9]+.[0-9]+"
+            exit 1
+          fi
+          API_VERSION="$(sed -n '/^ *version:/ { s/.*version: //; p; q; }' docs/openapi.yaml)"
+          if [[ "$TAG" != "v$API_VERSION" ]]; then
+            echo "Tag $TAG does not match the API version $API_VERSION in docs/openapi.yaml"
+            exit 1
+          fi
+      - name: Create Release
+        id: create_release
+        uses: softprops/action-gh-release@v2
+        with:
+          files: docs/openapi.yaml
+
+  publish:
+    runs-on: ubuntu-latest
+    needs: release
+    if: startsWith(github.ref, 'refs/tags/v')
+    permissions:
+      contents: write
+      actions: read
+    concurrency:
+      group: ${{ github.workflow }}-${{ github.ref }}
+    steps:
+      - name: Download artifact from build-html job
+        uses: actions/download-artifact@v4
+        with:
+          name: openapi-html
+          path: public
+      - name: Deploy
+        uses: peaceiris/actions-gh-pages@v4
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./public
