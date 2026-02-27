@@ -26,7 +26,7 @@ jobs:
       - name: Setup OpenAPI generator
         run: npm install -g @openapitools/openapi-generator-cli
       - name: Build HTML documentation
-        run: openapi-generator-cli generate --generator-name html2 --input-spec docs/openapi.yaml --output dist
+        run: openapi-generator-cli generate --config ./openapi-genconfig.yaml --output dist
       - name: Upload HTML documentation as artifact
         uses: actions/upload-artifact@v4
         with:
@@ -36,6 +36,7 @@ jobs:
   release:
     runs-on: ubuntu-latest
     needs: build-html
+    # Quick minimal test, proper one follows
     if: startsWith(github.ref, 'refs/tags/v')
     permissions:
       contents: write

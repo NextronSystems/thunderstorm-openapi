@@ -471,6 +471,7 @@ components:
       schema:
         type: integer
         format: int64
+        minimum: 0
     HistoryLimit:
       description: Give a history for the last this many minutes (default infinite).
       name: limit
@@ -478,6 +479,7 @@ components:
       schema:
         type: integer
         format: int64
+        minimum: 0
   requestBodies:
     FileUpload:
       required: true
