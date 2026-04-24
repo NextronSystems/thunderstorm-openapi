@@ -932,6 +932,18 @@ ul.nav-tabs {
   },
   "description" : "Error with message"
 };
+    defs["FileObject"] = {
+  "required" : [ "file" ],
+  "type" : "object",
+  "properties" : {
+    "file" : {
+      "type" : "string",
+      "description" : "File to be checked",
+      "format" : "binary"
+    }
+  },
+  "description" : "Wrapped file"
+};
     defs["SampleIdObj"] = {
   "required" : [ "id" ],
   "type" : "object",
@@ -943,6 +955,108 @@ ul.nav-tabs {
   "description" : "Object containing the Sample ID returned for an asynchronous scan request",
   "example" : {
     "id" : 12345
+  }
+};
+    defs["ThorFinding"] = {
+  "type" : "object",
+  "additionalProperties" : true,
+  "description" : "THOR Finding"
+};
+    defs["ThorReport"] = {
+  "type" : "array",
+  "description" : "THOR Report containing findings",
+  "example" : [ {
+    "type" : "THOR finding",
+    "meta" : {
+      "time" : "2026-01-16T13:35:34.11133172+01:00",
+      "level" : "Alert",
+      "module" : "HTTPServer",
+      "scan_id" : "S-qkQv5yHIUHk-2",
+      "hostname" : "127.0.0.1"
+    },
+    "message" : "Malicious file found",
+    "subject" : {
+      "type" : "file",
+      "path" : "somefile.exe",
+      "exists" : "yes",
+      "extension" : ".exe",
+      "magic_header" : "EXE",
+      "hashes" : {
+        "md5" : "7168892693d7716220d98883fffd848c",
+        "sha1" : "42acd9b554e1c843a9f8139022b560de0bf48682",
+        "sha256" : "660464c473c47784d8820d3e268c0d1327ac22ce0e607dc35e858628c53f0687"
+      },
+      "first_bytes" : {
+        "hex" : "4d5a90000300000004000000ffff0000b8000000",
+        "ascii" : "MZ"
+      },
+      "size" : 1352192,
+      "permissions" : null,
+      "content" : {
+        "type" : "sparse data",
+        "elements" : [ {
+          "offset" : 856110,
+          "data" : ">`ncrypt.dll"
+        } ],
+        "length" : 1352192
+      }
+    },
+    "score" : 94,
+    "reasons" : [ {
+      "type" : "reason",
+      "summary" : "some YARA rule",
+      "signature" : {
+        "score" : 85,
+        "reference" : [ "Internal Research" ],
+        "origin" : "internal",
+        "kind" : "YARA Rule",
+        "date" : "2023-05-12",
+        "tags" : [ "EXE", "HKTL" ],
+        "rule_name" : "Some_Rule_Name",
+        "description" : "Detects Something"
+      },
+      "matched" : [ {
+        "data" : "%*s**CREDENTIAL**",
+        "offset" : 918480,
+        "field" : "/content"
+      }, {
+        "data" : "%*s  Persist        : %08x - %u - %s",
+        "offset" : 919056,
+        "field" : "/content"
+      }, {
+        "data" : "%*s**DOMAINKEY**",
+        "offset" : 950688,
+        "field" : "/content"
+      } ]
+    }, {
+      "type" : "reason",
+      "summary" : "Another rule",
+      "signature" : {
+        "score" : 80,
+        "reference" : [ "Some reference" ],
+        "origin" : "internal",
+        "kind" : "YARA Rule",
+        "date" : "2016-02-05",
+        "tags" : [ "T1059_001" ],
+        "rule_name" : "Another_Rule_Name",
+        "description" : "Detects Something other"
+      },
+      "matched" : [ {
+        "data" : "kuhl_m_lsadump_getUsersAndSamKey ; kull_m_registry_RegOpenKeyEx SAM Accounts (0x%08x)",
+        "offset" : 1100540,
+        "field" : "/content"
+      }, {
+        "data" : "kuhl_m_lsadump_getComputerAndSyskey ; kuhl_m_lsadump_getSyskey KO",
+        "offset" : 1099708,
+        "field" : "/content"
+      } ]
+    } ],
+    "reason_count" : 28,
+    "context" : null,
+    "log_version" : "v3.0.0"
+  } ],
+  "items" : {
+    "$ref" : "#/components/schemas/ThorFinding"
   }
 };
     defs["ThunderstormInfo"] = {
@@ -1061,6 +1175,21 @@ ul.nav-tabs {
     }
   },
   "description" : "Version information for various components of the Thunderstorm service."
+};
+    defs["TimestampMap"] = {
+  "type" : "object",
+  "additionalProperties" : {
+    "type" : "integer",
+    "format" : "int64"
+  },
+  "description" : "Map of timestamps to integer values",
+  "example" : {
+    "2026-01-21 06:45" : 0,
+    "2026-01-21 07:00" : 9165,
+    "2026-01-21 07:15" : 49023,
+    "2026-01-21 07:30" : 61685,
+    "2026-01-21 07:45" : 54932
+  }
 };
 
         defs["SampleId"] = {
@@ -1595,7 +1724,7 @@ public class InfoApiExample {
         Long limit = 789; // Long | Give a history for the last this many minutes (default infinite).
 
         try {
-            map['String', Long] result = apiInstance.queueHistory(aggregate, limit);
+            TimestampMap result = apiInstance.queueHistory(aggregate, limit);
             System.out.println(result);
         } catch (ApiException e) {
             System.err.println("Exception when calling InfoApi#queueHistory");
@@ -1634,7 +1763,7 @@ public class InfoApiExample {
         Long limit = 789; // Long | Give a history for the last this many minutes (default infinite).
 
         try {
-            map['String', Long] result = apiInstance.queueHistory(aggregate, limit);
+            TimestampMap result = apiInstance.queueHistory(aggregate, limit);
             System.out.println(result);
         } catch (ApiException e) {
             System.err.println("Exception when calling InfoApi#queueHistory");
@@ -1658,7 +1787,7 @@ Long *limit = 789; // Give a history for the last this many minutes (default inf
 // Retrieve a history of how many asynchronous requests were queued
 [apiInstance queueHistoryWith:aggregate
     limit:limit
-              completionHandler: ^(map['String', Long] output, NSError* error) {
+              completionHandler: ^(TimestampMap output, NSError* error) {
     if (output) {
         NSLog(@"%@", output);
     }
@@ -1714,7 +1843,7 @@ namespace Example
 
             try {
                 // Retrieve a history of how many asynchronous requests were queued
-                map['String', Long] result = apiInstance.queueHistory(aggregate, limit);
+                TimestampMap result = apiInstance.queueHistory(aggregate, limit);
                 Debug.WriteLine(result);
             } catch (Exception e) {
                 Debug.Print("Exception when calling InfoApi.queueHistory: " + e.Message );
@@ -2076,7 +2205,7 @@ public class InfoApiExample {
         Long limit = 789; // Long | Give a history for the last this many minutes (default infinite).
 
         try {
-            map['String', Long] result = apiInstance.sampleHistory(aggregate, limit);
+            TimestampMap result = apiInstance.sampleHistory(aggregate, limit);
             System.out.println(result);
         } catch (ApiException e) {
             System.err.println("Exception when calling InfoApi#sampleHistory");
@@ -2115,7 +2244,7 @@ public class InfoApiExample {
         Long limit = 789; // Long | Give a history for the last this many minutes (default infinite).
 
         try {
-            map['String', Long] result = apiInstance.sampleHistory(aggregate, limit);
+            TimestampMap result = apiInstance.sampleHistory(aggregate, limit);
             System.out.println(result);
         } catch (ApiException e) {
             System.err.println("Exception when calling InfoApi#sampleHistory");
@@ -2139,7 +2268,7 @@ Long *limit = 789; // Give a history for the last this many minutes (default inf
 // Retrieve a history of how many samples were scanned
 [apiInstance sampleHistoryWith:aggregate
     limit:limit
-              completionHandler: ^(map['String', Long] output, NSError* error) {
+              completionHandler: ^(TimestampMap output, NSError* error) {
     if (output) {
         NSLog(@"%@", output);
     }
@@ -2195,7 +2324,7 @@ namespace Example
 
             try {
                 // Retrieve a history of how many samples were scanned
-                map['String', Long] result = apiInstance.sampleHistory(aggregate, limit);
+                TimestampMap result = apiInstance.sampleHistory(aggregate, limit);
                 Debug.WriteLine(result);
             } catch (Exception e) {
                 Debug.Print("Exception when calling InfoApi.sampleHistory: " + e.Message );
@@ -3416,7 +3545,7 @@ public class ScanApiExample {
         String source = source_example; // String | Specify source for the THOR log
 
         try {
-            array[Map] result = apiInstance.check(file, source);
+            ThorReport result = apiInstance.check(file, source);
             System.out.println(result);
         } catch (ApiException e) {
             System.err.println("Exception when calling ScanApi#check");
@@ -3455,7 +3584,7 @@ public class ScanApiExample {
         String source = source_example; // String | Specify source for the THOR log
 
         try {
-            array[Map] result = apiInstance.check(file, source);
+            ThorReport result = apiInstance.check(file, source);
             System.out.println(result);
         } catch (ApiException e) {
             System.err.println("Exception when calling ScanApi#check");
@@ -3479,7 +3608,7 @@ String *source = source_example; // Specify source for the THOR log (optional) (
 // Check a file with THOR
 [apiInstance checkWith:file
     source:source
-              completionHandler: ^(array[Map] output, NSError* error) {
+              completionHandler: ^(ThorReport output, NSError* error) {
     if (output) {
         NSLog(@"%@", output);
     }
@@ -3535,7 +3664,7 @@ namespace Example
 
             try {
                 // Check a file with THOR
-                array[Map] result = apiInstance.check(file, source);
+                ThorReport result = apiInstance.check(file, source);
                 Debug.WriteLine(result);
             } catch (Exception e) {
                 Debug.Print("Exception when calling ScanApi.check: " + e.Message );
