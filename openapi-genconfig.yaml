@@ -1,0 +1,5 @@
+generatorName: html2
+inputSpec: ./docs/openapi.yaml
+generateAliasAsModel: true
+globalProperties:
+  skipFormModel: false
