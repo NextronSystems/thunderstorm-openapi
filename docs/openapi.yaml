@@ -147,6 +147,24 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/ThunderstormStatus"
+  /signatures:
+    get:
+      summary: List the signatures loaded by the running THOR instance
+      description: >-
+        List meta information about all signatures (YARA rules, Sigma rules,
+        IOCs, ...) loaded by the running THOR instance.
+      tags:
+        - info
+      operationId: signatures
+      responses:
+        "200":
+          description: Returns a list of signatures
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SignatureList"
+        "500":
+          $ref: "#/components/responses/InternalServerError"
 components:
   schemas:
     FileObject:
@@ -448,6 +466,98 @@ components:
         queued_async_requests: 0
         avg_scan_time_milliseconds: 21
         avg_wait_time_milliseconds: 0
+    SignatureList:
+      description: List of signatures
+      type: array
+      items:
+        $ref: "#/components/schemas/Signature"
+      example:
+        - score: 85
+          reference:
+            - Internal Research
+          origin: internal
+          kind: YARA Rule
+          date: '2023-05-12'
+          tags:
+            - EXE
+            - HKTL
+          rule_name: Some_Rule_Name
+          description: Detects Something
+          author: Florian Roth
+        - score: 75
+          reference: []
+          origin: custom
+          kind: Filename IOC
+          description: Suspicious file name
+    Signature:
+      description: Meta information about a signature
+      type: object
+      properties:
+        score:
+          description: >-
+            Metric that combines severity and certainty for this signature.
+            Unlike finding scores, it is not limited to 0 to 100 and may be
+            negative to indicate a likely false positive.
+          type: integer
+          format: int64
+          example: 85
+        reference:
+          description: References (usually links) with further information about the detected threat
+          type: array
+          nullable: true
+          items:
+            type: string
+          example: ["https://example.org/report"]
+        origin:
+          description: Whether the signature is built into THOR or provided by the user
+          type: string
+          enum: [internal, custom, external]
+          example: internal
+        kind:
+          description: >-
+            Class of the signature: Filename IOC, Named Pipe IOC, YARA Rule,
+            Sigma Rule, STIX IOC, Internal Heuristic, Hash IOC, Keyword IOC,
+            Domain IOC or Handle IOC
+          type: string
+          # Not an enum: the values are not snake-cased.
+          example: YARA Rule
+        date:
+          description: Date on which the signature was last modified
+          type: string
+          example: "2023-05-12"
+        tags:
+          description: Short strings that group signatures, e.g. APT or MAL
+          type: array
+          items:
+            type: string
+          example: ["EXE", "HKTL"]
+        rule_name:
+          description: Name of the signature, e.g. a YARA rule name
+          type: string
+          example: Some_Rule_Name
+        description:
+          description: Description the signature has about itself
+          type: string
+          example: Detects Something
+        author:
+          description: Name of the signature author
+          type: string
+          example: Florian Roth
+        id:
+          description: Unique ID of the signature; not provided by all signature kinds
+          type: string
+          example: 5f8a3c1e-6b2d-4e7a-9c0f-1d2e3f4a5b6c
+        false_positives:
+          description: Cases where this signature is known to match benign data
+          type: array
+          items:
+            type: string
+          example: ["Legitimate administration tools"]
+      required:
+        - score
+        - reference
+        - origin
+        - kind
     Error:
       description: Error with message
       type: object
