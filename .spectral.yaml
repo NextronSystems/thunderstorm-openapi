@@ -11,6 +11,8 @@ rules:
   ibm-required-array-properties-in-response: info
   # Legacy: history data can be empty.
   ibm-accept-and-return-models: info
+  # Legacy: signature references are null instead of an empty list.
+  ibm-no-nullable-properties: info
 
   # THOR Finding's properties have various different value types, even on the first level.
   ibm-well-defined-dictionaries: off
