@@ -520,7 +520,7 @@ components:
           schema:
             $ref: "#/components/schemas/Error"
     InternalServerError:
-      description: Unauthorized
+      description: Internal server error
       content:
         application/json:
           schema:
