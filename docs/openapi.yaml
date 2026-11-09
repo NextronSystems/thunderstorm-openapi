@@ -85,6 +85,8 @@ paths:
                 $ref: "#/components/schemas/AsyncResult"
         "400":
           $ref: "#/components/responses/BadRequest"
+        "404":
+          $ref: "#/components/responses/NotFound"
         "500":
           $ref: "#/components/responses/InternalServerError"
   /queueHistory:
@@ -507,6 +509,12 @@ components:
             $ref: "#/components/schemas/TimestampMap"
     BadRequest:
       description: Invalid parameters given
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/Error"
+    NotFound:
+      description: The specified sample ID does not exist
       content:
         application/json:
           schema:
