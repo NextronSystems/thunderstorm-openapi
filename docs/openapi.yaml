@@ -269,12 +269,20 @@ components:
       type: object
       properties:
         status:
-          description: Current status of the scan
+          description: |-
+            Current status of the scan:
+            - `queued`: waiting for execution
+            - `scanning`: currently being scanned
+            - `completed`: analysis complete, `result` holds the findings
+            - `failed`: analysis failed
           type: string
-          # TODO: Use enum? (would require snake-cased keywords)
-          # values: ["Waiting for execution", "Currently being scanned", "Sample analysis complete", "Sample analysis failed", "invalid"]
+          enum:
+            - queued
+            - scanning
+            - completed
+            - failed
           example:
-            Currently being scanned
+            scanning
         result:
           $ref: "#/components/schemas/ThorReport"
       required:
@@ -330,7 +338,7 @@ components:
             reason_count: 1
             context: null
             log_version: v3.0.0
-        status: Sample analysis complete
+        status: completed
     TimestampMap:
       description: Map of timestamps to integer values
       type: object
